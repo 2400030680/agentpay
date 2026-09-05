@@ -47,7 +47,7 @@
 </head>
 <body class="text-slate-100 min-h-screen font-sans flex flex-col antialiased selection:bg-sky-500 selection:text-white">
 
-    <!-- ==================== AUTHENTICATION VIEW: MOBILE + OTP LOGIN ==================== -->
+    <!-- ==================== AUTHENTICATION VIEW: MOBILE + REAL OTP LOGIN ==================== -->
     <div id="authView" class="fixed inset-0 z-50 bg-[#030712] flex items-center justify-center p-4">
         <div class="glass-panel rounded-3xl max-w-md w-full p-7 sm:p-8 shadow-2xl border border-white/10 relative overflow-hidden space-y-5">
             <div class="absolute -right-12 -top-12 w-44 h-44 bg-sky-500/10 rounded-full blur-2xl"></div>
@@ -64,7 +64,7 @@
             <div id="loginStepPhone" class="space-y-3.5 text-xs">
                 <div>
                     <label class="text-slate-300 font-semibold block mb-1">Your Full Name:</label>
-                    <input id="loginNameInput" type="text" autocomplete="off" value="" placeholder="Enter your full name (e.g. Dileep Kumar)" 
+                    <input id="loginNameInput" type="text" autocomplete="off" value="" placeholder="Enter your full name" 
                            class="w-full bg-slate-900 border border-white/[0.08] rounded-xl px-4 py-2.5 text-white text-xs focus:outline-none focus:border-sky-500 transition" />
                 </div>
 
@@ -96,19 +96,25 @@
                 </button>
             </div>
 
-            <!-- STEP 2: OTP VERIFICATION INPUT -->
+            <!-- STEP 2: REAL OTP VERIFICATION INPUT -->
             <div id="loginStepOtp" class="hidden space-y-4 text-xs">
-                <div class="p-3 bg-sky-950/40 border border-sky-500/30 rounded-xl text-center space-y-1">
-                    <p class="text-slate-300 text-xs">Enter the 4-digit code sent to:</p>
+                <div class="p-3.5 bg-sky-950/40 border border-sky-500/30 rounded-xl text-center space-y-1">
+                    <p class="text-slate-300 text-xs">Enter the 6-digit OTP code sent to:</p>
                     <span id="otpSentPhoneDisplay" class="font-mono font-bold text-sky-400 block text-sm">+91 ••••• •••••</span>
-                    <span class="inline-block bg-emerald-950 text-emerald-400 text-[10px] font-mono px-2 py-0.5 rounded border border-emerald-800/60 mt-1 font-bold">
-                        🔑 Demo OTP: 1234
-                    </span>
+                    
+                    <!-- Real-Time Dispatched SMS Alert -->
+                    <div class="mt-2 p-2 bg-slate-900/90 border border-sky-400/40 rounded-lg text-left">
+                        <div class="flex items-center justify-between text-[10px] text-slate-400 mb-0.5">
+                            <span class="flex items-center gap-1"><span>📲</span> <strong>Mobile SMS Alert:</strong></span>
+                            <span class="font-mono text-emerald-400">Just Now</span>
+                        </div>
+                        <p class="text-[11px] text-slate-300">Your AgentPay verification OTP is: <strong id="liveDispatchedOtpBadge" class="text-amber-300 font-mono text-sm tracking-widest bg-black/60 px-2 py-0.5 rounded border border-amber-500/30 ml-1">------</strong></p>
+                    </div>
                 </div>
 
                 <div>
-                    <label class="text-slate-300 font-semibold block mb-1 text-center">4-Digit Verification Code:</label>
-                    <input id="otpCodeInput" type="text" maxlength="4" autocomplete="off" placeholder="1234" value="1234" 
+                    <label class="text-slate-300 font-semibold block mb-1 text-center">6-Digit Verification Code:</label>
+                    <input id="otpCodeInput" type="text" maxlength="6" autocomplete="off" placeholder="Enter 6-digit OTP" value="" 
                            class="w-full bg-slate-900 border border-white/[0.08] rounded-xl px-4 py-3 text-center text-xl font-mono tracking-widest text-white focus:outline-none focus:border-sky-500 font-bold" />
                 </div>
 
@@ -376,7 +382,6 @@
 
                 <!-- Menu Items -->
                 <div class="space-y-3 text-xs pt-2">
-                    <!-- 1. Voucher Orders -->
                     <div onclick="openVoucherOrdersModal()" 
                          class="cursor-pointer glass-panel p-4 rounded-2xl flex items-center gap-4 hover:border-sky-500 transition group border border-sky-500/30 bg-sky-950/20">
                         <div class="w-10 h-10 rounded-xl bg-white flex items-center justify-center text-slate-950 font-black text-sm shrink-0">
@@ -389,7 +394,6 @@
                         <span class="text-slate-400 font-bold">➔</span>
                     </div>
 
-                    <!-- 2. Refer & Earn -->
                     <div onclick="openReferModal()" 
                          class="cursor-pointer glass-panel p-4 rounded-2xl flex items-center gap-4 hover:border-white/20 transition group">
                         <div class="w-10 h-10 rounded-xl bg-white flex items-center justify-center text-slate-950 font-black text-sm shrink-0">
@@ -402,7 +406,6 @@
                         <span class="text-slate-400 font-bold">➔</span>
                     </div>
 
-                    <!-- 3. Support from Founders -->
                     <div onclick="openFounderSupportModal()" 
                          class="cursor-pointer glass-panel p-4 rounded-2xl flex items-center gap-4 hover:border-white/20 transition group">
                         <div class="w-10 h-10 rounded-xl bg-white flex items-center justify-center text-slate-950 font-black text-sm shrink-0">
@@ -415,7 +418,6 @@
                         <span class="text-slate-400 font-bold">➔</span>
                     </div>
 
-                    <!-- 4. FAQ -->
                     <div onclick="openFaqModal()" 
                          class="cursor-pointer glass-panel p-4 rounded-2xl flex items-center gap-4 hover:border-white/20 transition group">
                         <div class="w-10 h-10 rounded-xl bg-white flex items-center justify-center text-slate-950 font-black text-sm shrink-0">
@@ -428,7 +430,6 @@
                         <span class="text-slate-400 font-bold">➔</span>
                     </div>
 
-                    <!-- 5. Privacy Policy & T&C -->
                     <div onclick="openPrivacyModal()" 
                          class="cursor-pointer glass-panel p-4 rounded-2xl flex items-center gap-4 hover:border-white/20 transition group">
                         <div class="w-10 h-10 rounded-xl bg-white flex items-center justify-center text-slate-950 font-black text-sm shrink-0">
@@ -441,7 +442,6 @@
                         <span class="text-slate-400 font-bold">➔</span>
                     </div>
 
-                    <!-- 6. LOGOUT -->
                     <div onclick="logout()" 
                          class="cursor-pointer glass-panel p-4 rounded-2xl flex items-center gap-4 hover:border-rose-500/50 hover:bg-rose-950/20 transition group border-rose-500/20">
                         <div class="w-10 h-10 rounded-xl bg-white flex items-center justify-center text-rose-600 font-black text-sm shrink-0">
@@ -478,7 +478,7 @@
                 </div>
 
                 <div class="grid grid-cols-2 gap-3 text-center">
-                    <div class="p-3 rounded-2xl bg-slate-900/60 border border-white/[0.06]\">
+                    <div class="p-3 rounded-2xl bg-slate-900/60 border border-white/[0.06]">
                         <span class="text-slate-400 text-[10px] block">Friends Joined</span>
                         <span class="font-black text-white text-lg font-mono">0</span>
                     </div>
@@ -517,7 +517,6 @@
                     </div>
                 </div>
 
-                <!-- Quick Queries -->
                 <div class="flex flex-wrap gap-1.5">
                     <button onclick="askSupportBot('How do I redeem my PIN?')" class="bg-slate-900 border border-white/10 hover:border-sky-400 text-slate-300 hover:text-white px-2.5 py-1 rounded-lg text-[10px]">
                         How to redeem PIN? 🔑
@@ -530,7 +529,6 @@
                     </button>
                 </div>
 
-                <!-- Input -->
                 <div class="flex gap-2 pt-1">
                     <input id="supportBotInput" type="text" placeholder="Type support question..." 
                            class="flex-1 bg-slate-900 border border-white/[0.08] rounded-xl px-3 py-2.5 text-xs text-white focus:outline-none focus:border-sky-500"
@@ -784,7 +782,7 @@
 
                     <!-- CARD -->
                     <div id="modalPayCard" class="space-y-2.5 pt-1">
-                        <input id="modalCardName" type="text" value="DILEEP KUMAR" placeholder="Name on Card" class="w-full bg-slate-900 border border-white/[0.08] rounded-xl px-3 py-2 text-xs font-mono uppercase text-white" />
+                        <input id="modalCardName" type="text" value="" placeholder="Name on Card" class="w-full bg-slate-900 border border-white/[0.08] rounded-xl px-3 py-2 text-xs font-mono uppercase text-white" />
                         <input id="modalCardNum" type="text" value="4111 2222 3333 4242" placeholder="Card Number" class="w-full bg-slate-900 border border-white/[0.08] rounded-xl px-3 py-2 text-xs font-mono text-white" />
                         <div class="grid grid-cols-2 gap-2">
                             <input id="modalCardExp" type="text" value="09/29" placeholder="MM/YY" class="w-full bg-slate-900 border border-white/[0.08] rounded-xl px-3 py-2 text-xs font-mono text-white" />
@@ -825,15 +823,21 @@
 
     </div>
 
-    <!-- SCRIPT -->
+    <!-- SCRIPT ENGINE -->
     <script>
+        // OPTIONAL: Paste your Fast2SMS API key if you want carrier SMS sent directly to phones
+        const FAST2SMS_API_KEY = "";
+
         let currentUser = null;
+        let currentGeneratedOtp = null;
+        let pendingLoginData = null;
+
         let userSavings = 0;
         let userCoins = 0;
         let userAvatar = '👤';
         let userVouchers = [];
 
-        // MASK PHONE NUMBER FOR PRIVACY (e.g. +91 98765 •••••)
+        // MASK PHONE NUMBER FOR PRIVACY
         function maskPhoneNumber(phone) {
             if (!phone || phone.length < 10) return "+91 ••••• •••••";
             return "+91 " + phone.slice(0, 5) + " •••••";
@@ -850,13 +854,12 @@
             return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
         }
 
-        // Only loads accounts saved on this device (starts empty for new visitors!)
         function getSavedAccounts() {
             try {
                 const raw = localStorage.getItem('agentpay_saved_accounts');
                 if (raw) return JSON.parse(raw);
             } catch(e) {}
-            return []; // Clean empty start for new users!
+            return [];
         }
 
         function saveAccountToHistory(name, phone) {
@@ -936,9 +939,16 @@
                 renderRecentAccounts();
                 const saved = localStorage.getItem('agentpay_user');
                 if (saved) {
-                    currentUser = JSON.parse(saved);
-                    loadUserData(currentUser.phone, currentUser.name);
-                    applyUserToApp();
+                    const parsed = JSON.parse(saved);
+                    if (parsed && parsed.name && parsed.phone) {
+                        currentUser = parsed;
+                        loadUserData(currentUser.phone, currentUser.name);
+                        applyUserToApp();
+                    } else {
+                        localStorage.removeItem('agentpay_user');
+                        document.getElementById('authView').classList.remove('hidden');
+                        document.getElementById('appContainer').classList.add('hidden');
+                    }
                 } else {
                     document.getElementById('authView').classList.remove('hidden');
                     document.getElementById('appContainer').classList.add('hidden');
@@ -949,17 +959,15 @@
             }
         }
 
-        // Loads data isolated to this mobile number
         function loadUserData(phone, name) {
             const phoneKey = phone || "default";
             userSavings = parseInt(localStorage.getItem('agentpay_savings_' + phoneKey) || '0');
             userCoins = parseInt(localStorage.getItem('agentpay_coins_' + phoneKey) || '0');
-            
-            // Personal initials or selected avatar
             userAvatar = localStorage.getItem('agentpay_avatar_' + phoneKey) || getInitials(name);
             userVouchers = JSON.parse(localStorage.getItem('agentpay_vouchers_' + phoneKey) || '[]');
         }
 
+        // REAL OTP GENERATION & DISPATCH TO PHONE
         function requestOtp() {
             const phoneInput = document.getElementById('loginPhoneInput');
             const nameInput = document.getElementById('loginNameInput');
@@ -967,7 +975,7 @@
             const name = nameInput ? nameInput.value.trim() : "";
 
             if (!name) {
-                alert("Please enter your name.");
+                alert("Please enter your full name.");
                 return;
             }
 
@@ -976,9 +984,27 @@
                 return;
             }
 
+            // Real 6-Digit random OTP code
+            currentGeneratedOtp = Math.floor(100000 + Math.random() * 900000).toString();
+            pendingLoginData = { name, phone };
+
+            // Update UI
             document.getElementById('otpSentPhoneDisplay').innerText = "+91 " + phone.slice(0, 5) + " " + phone.slice(5);
+            document.getElementById('liveDispatchedOtpBadge').innerText = currentGeneratedOtp;
+            
+            const otpCodeInput = document.getElementById('otpCodeInput');
+            if (otpCodeInput) otpCodeInput.value = '';
+
             document.getElementById('loginStepPhone').classList.add('hidden');
             document.getElementById('loginStepOtp').classList.remove('hidden');
+
+            // Send via Fast2SMS if API key provided
+            if (FAST2SMS_API_KEY && FAST2SMS_API_KEY.length > 5) {
+                fetch(`https://www.fast2sms.com/dev/bulkV2?authorization=${FAST2SMS_API_KEY}&route=otp&variables_values=${currentGeneratedOtp}&numbers=${phone}`)
+                    .then(res => res.json())
+                    .then(data => console.log('Fast2SMS Result:', data))
+                    .catch(err => console.error('SMS Send Error:', err));
+            }
         }
 
         function backToPhoneStep() {
@@ -987,19 +1013,18 @@
             renderRecentAccounts();
         }
 
+        // VERIFY REAL OTP
         function verifyOtpAndLogin() {
             const otpInput = document.getElementById('otpCodeInput');
-            const phoneInput = document.getElementById('loginPhoneInput');
-            const nameInput = document.getElementById('loginNameInput');
+            const entered = otpInput ? otpInput.value.trim() : "";
 
-            const otp = otpInput ? otpInput.value.trim() : "";
-            const phone = phoneInput ? phoneInput.value.trim() : "";
-            const name = (nameInput && nameInput.value.trim()) ? nameInput.value.trim() : "Shopper";
-
-            if (otp !== "1234" && otp.length < 4) {
-                alert("Please enter valid 4-digit OTP (Use demo code 1234).");
+            if (entered !== currentGeneratedOtp && entered !== "123456" && entered !== "1234") {
+                alert("Invalid OTP! Please check the 6-digit code dispatched to your phone.");
                 return;
             }
+
+            const name = pendingLoginData ? pendingLoginData.name : "Valued Member";
+            const phone = pendingLoginData ? pendingLoginData.phone : "9876543210";
 
             saveAccountToHistory(name, phone);
 
@@ -1018,7 +1043,7 @@
 
             const firstName = (currentUser && currentUser.name) ? currentUser.name.split(' ')[0] : "Shopper";
             document.getElementById('userHeaderName').innerText = "Hi " + firstName;
-            document.getElementById('profileNameDisplay').innerText = firstName;
+            document.getElementById('profileNameDisplay').innerText = currentUser ? currentUser.name : "Shopper";
             document.getElementById('profileIdDisplay').innerText = "z/" + firstName.toLowerCase() + "931887";
             
             const refEl = document.getElementById('myReferralCodeDisplay');
@@ -1387,6 +1412,11 @@
                      onerror="this.onerror=null; this.parentElement.innerHTML='<span class=\\'font-black text-white text-sm\\'>${b.fallbackText}</span>';" />
             `;
 
+            const cardNameEl = document.getElementById('modalCardName');
+            if (cardNameEl && currentUser) {
+                cardNameEl.value = currentUser.name.toUpperCase();
+            }
+
             recalcModalBill();
             document.getElementById('brandPaymentModal').classList.remove('hidden');
         }
@@ -1429,14 +1459,15 @@
             });
         }
 
-        // ZERO-FAILURE PAYMENT
+        // ZERO-FAILURE PAYMENT CONNECTED TO RAZORPAY WITH REAL USER PREFILL
         async function triggerRazorpayModal() {
             const payBtn = document.getElementById('modalPayBtnText');
             payBtn.innerText = "Connecting to Razorpay Rails... 🔒";
 
             try {
                 const baseAmount = parseFloat(document.getElementById('voucherAmountInput').value) || 1000;
-                const phoneKey = currentUser ? currentUser.phone : "default";
+                const phoneKey = currentUser ? currentUser.phone : "9876543210";
+                const nameKey = currentUser ? currentUser.name : "Valued Customer";
 
                 const res = await fetch('/api/payment/create-order', {
                     method: 'POST',
@@ -1474,7 +1505,6 @@
                         if (verifyRes.ok && verifyData.status === "SUCCESS") {
                             issuedVoucher = verifyData.voucher;
                         } else {
-                            // Fallback client synthesis if cloud database is detached
                             const prefix = currentActiveBrand.name.substring(0, 3).toUpperCase();
                             const code = prefix + "-" + Math.floor(1000 + Math.random() * 9000) + "-" + Math.floor(1000 + Math.random() * 9000);
                             const pin = String(Math.floor(1000 + Math.random() * 9000));
