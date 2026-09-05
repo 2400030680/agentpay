@@ -1,0 +1,52 @@
+{
+  "info": {
+    "name": "AgentPay APIs",
+    "description": "REST APIs for AgentPay - Razorpay AI Agentic Commerce Platform",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "1. Create Razorpay Order",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"totalAmount\": 880,\n  \"couponCode\": \"ZAVE_PARTNER\"\n}"
+        },
+        "url": "http://localhost:8080/api/payment/create-order"
+      }
+    },
+    {
+      "name": "2. Verify Payment & Persist",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"razorpayOrderId\": \"order_test_101\",\n  \"razorpayPaymentId\": \"pay_test_101\",\n  \"razorpaySignature\": \"verified_signature\",\n  \"phone\": \"9876543210\",\n  \"brandId\": \"pvr\",\n  \"brandName\": \"PVR INOX\",\n  \"faceValue\": 1000,\n  \"paidAmount\": 880\n}"
+        },
+        "url": "http://localhost:8080/api/payment/verify"
+      }
+    },
+    {
+      "name": "3. Get User Vouchers",
+      "request": {
+        "method": "GET",
+        "url": "http://localhost:8080/api/payment/vouchers?phone=9876543210"
+      }
+    },
+    {
+      "name": "4. AI Shopping Assistant",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"message\": \"Give me the best discounts on BookMyShow and PVR\"\n}"
+        },
+        "url": "http://localhost:8080/api/chat"
+      }
+    }
+  ]
+}
