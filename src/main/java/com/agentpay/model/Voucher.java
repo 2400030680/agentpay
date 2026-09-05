@@ -1,34 +1,38 @@
 package com.agentpay.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
-import java.time.LocalDate;
+import jakarta.persistence.*;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "vouchers")
 public class Voucher {
 
     @Id
-    private String id;
-    private String userPhone;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
     private String brandId;
     private String brandName;
-    private double faceValue;
-    private double paidAmount;
-    private double savedAmount;
     private String voucherCode;
     private String voucherPin;
-    private String status;
-    private String createdAt;
+    private Double faceValue;
+    private Double paidAmount;
+    private Double savedAmount;
+    private String phone;
+    private String email;
+    private String paymentId;
+    private LocalDateTime createdAt;
 
-    public Voucher() {}
+    // 1. Default No-Arg Constructor (Required by JPA/Hibernate)
+    public Voucher() {
+        this.createdAt = LocalDateTime.now();
+    }
 
-    // 9-argument Constructor (Matches VoucherService.java)
-    public Voucher(String id, String userPhone, String brandId, String brandName, double faceValue, 
-                   double paidAmount, double savedAmount, String voucherCode, String voucherPin) {
-        this.id = id;
-        this.userPhone = userPhone;
+    // 2. All-Args Constructor (Required by VoucherService)
+    public Voucher(String customId, String phone, String brandId, String brandName, 
+                   Double faceValue, Double paidAmount, Double savedAmount, 
+                   String voucherCode, String voucherPin) {
+        this.phone = phone;
         this.brandId = brandId;
         this.brandName = brandName;
         this.faceValue = faceValue;
@@ -36,47 +40,106 @@ public class Voucher {
         this.savedAmount = savedAmount;
         this.voucherCode = voucherCode;
         this.voucherPin = voucherPin;
-        this.status = "ACTIVE";
-        this.createdAt = LocalDate.now().toString();
+        this.createdAt = LocalDateTime.now();
     }
 
-    // 8-argument Constructor (Matches PaymentController.java)
-    public Voucher(String id, String userPhone, String brandName, double faceValue, 
-                   double paidAmount, double savedAmount, String voucherCode, String voucherPin) {
-        this(id, userPhone, "brand", brandName, faceValue, paidAmount, savedAmount, voucherCode, voucherPin);
+    // ================= GETTERS & SETTERS =================
+    public Long getId() { 
+        return id; 
+    }
+    public void setId(Long id) { 
+        this.id = id; 
     }
 
-    // Getters and Setters
-    public String getId() { return id; }
-    public void setId(String id) { this.id = id; }
+    public String getBrandId() { 
+        return brandId; 
+    }
+    public void setBrandId(String brandId) { 
+        this.brandId = brandId; 
+    }
 
-    public String getUserPhone() { return userPhone; }
-    public void setUserPhone(String userPhone) { this.userPhone = userPhone; }
+    public String getBrandName() { 
+        return brandName; 
+    }
+    public void setBrandName(String brandName) { 
+        this.brandName = brandName; 
+    }
 
-    public String getBrandId() { return brandId; }
-    public void setBrandId(String brandId) { this.brandId = brandId; }
+    public String getVoucherCode() { 
+        return voucherCode; 
+    }
+    public void setVoucherCode(String voucherCode) { 
+        this.voucherCode = voucherCode; 
+    }
 
-    public String getBrandName() { return brandName; }
-    public void setBrandName(String brandName) { this.brandName = brandName; }
+    public String getVoucherPin() { 
+        return voucherPin; 
+    }
+    public void setVoucherPin(String voucherPin) { 
+        this.voucherPin = voucherPin; 
+    }
 
-    public double getFaceValue() { return faceValue; }
-    public void setFaceValue(double faceValue) { this.faceValue = faceValue; }
+    public Double getFaceValue() { 
+        return faceValue; 
+    }
+    public void setFaceValue(Double faceValue) { 
+        this.faceValue = faceValue; 
+    }
 
-    public double getPaidAmount() { return paidAmount; }
-    public void setPaidAmount(double paidAmount) { this.paidAmount = paidAmount; }
+    public Double getPaidAmount() { 
+        return paidAmount; 
+    }
+    public void setPaidAmount(Double paidAmount) { 
+        this.paidAmount = paidAmount; 
+    }
 
-    public double getSavedAmount() { return savedAmount; }
-    public void setSavedAmount(double savedAmount) { this.savedAmount = savedAmount; }
+    public Double getSavedAmount() { 
+        return savedAmount; 
+    }
+    public void setSavedAmount(Double savedAmount) { 
+        this.savedAmount = savedAmount; 
+    }
 
-    public String getVoucherCode() { return voucherCode; }
-    public void setVoucherCode(String voucherCode) { this.voucherCode = voucherCode; }
+    public String getPhone() { 
+        return phone; 
+    }
+    public void setPhone(String phone) { 
+        this.phone = phone; 
+    }
 
-    public String getVoucherPin() { return voucherPin; }
-    public void setVoucherPin(String voucherPin) { this.voucherPin = voucherPin; }
+    // Alias methods for VoucherService compatibility
+    public String getUserPhone() { 
+        return phone; 
+    }
+    public void setUserPhone(String userPhone) { 
+        this.phone = userPhone; 
+    }
 
-    public String getStatus() { return status; }
-    public void setStatus(String status) { this.status = status; }
+    public String getEmail() { 
+        return email; 
+    }
+    public void setEmail(String email) { 
+        this.email = email; 
+    }
 
-    public String getCreatedAt() { return createdAt; }
-    public void setCreatedAt(String createdAt) { this.createdAt = createdAt; }
+    public String getUserEmail() { 
+        return email; 
+    }
+    public void setUserEmail(String userEmail) { 
+        this.email = userEmail; 
+    }
+
+    public String getPaymentId() { 
+        return paymentId; 
+    }
+    public void setPaymentId(String paymentId) { 
+        this.paymentId = paymentId; 
+    }
+
+    public LocalDateTime getCreatedAt() { 
+        return createdAt; 
+    }
+    public void setCreatedAt(LocalDateTime createdAt) { 
+        this.createdAt = createdAt; 
+    }
 }

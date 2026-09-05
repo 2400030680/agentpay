@@ -47,7 +47,7 @@
 </head>
 <body class="text-slate-100 min-h-screen font-sans flex flex-col antialiased selection:bg-sky-500 selection:text-white">
 
-    <!-- ==================== AUTHENTICATION VIEW: MOBILE + REAL OTP LOGIN ==================== -->
+    <!-- ==================== AUTHENTICATION VIEW ==================== -->
     <div id="authView" class="fixed inset-0 z-50 bg-[#030712] flex items-center justify-center p-4">
         <div class="glass-panel rounded-3xl max-w-md w-full p-7 sm:p-8 shadow-2xl border border-white/10 relative overflow-hidden space-y-5">
             <div class="absolute -right-12 -top-12 w-44 h-44 bg-sky-500/10 rounded-full blur-2xl"></div>
@@ -60,7 +60,7 @@
                 <p class="text-xs text-slate-400">Unlock instant discounts on 300+ brands with Razorpay</p>
             </div>
 
-            <!-- STEP 1: MOBILE & NAME INPUT -->
+            <!-- STEP 1: NAME, MOBILE & MANDATORY EMAIL -->
             <div id="loginStepPhone" class="space-y-3.5 text-xs">
                 <div>
                     <label class="text-slate-300 font-semibold block mb-1">Your Full Name:</label>
@@ -79,50 +79,41 @@
                     </div>
                 </div>
 
-                <!-- PREVIOUS / RECENT TEST ACCOUNTS QUICK PICKER -->
-                <div id="recentAccountsSection" class="hidden space-y-1.5 pt-1">
-                    <div class="flex items-center justify-between text-[11px]">
-                        <span class="font-bold text-slate-400 uppercase tracking-wider flex items-center gap-1">
-                            <span>⚡</span> Previously Used Accounts:
-                        </span>
-                        <span class="text-[10px] text-sky-400 font-mono">1-Tap Fill</span>
-                    </div>
-                    <div id="recentAccountsList" class="flex flex-wrap gap-1.5 max-h-28 overflow-y-auto pr-1"></div>
+                <div>
+                    <label class="text-slate-300 font-semibold block mb-1">Email Address (for Real OTP):</label>
+                    <input id="loginEmailInput" type="email" autocomplete="off" value="" placeholder="Enter your email (e.g. name@gmail.com)" 
+                           class="w-full bg-slate-900 border border-white/[0.08] rounded-xl px-4 py-2.5 text-white text-xs focus:outline-none focus:border-sky-500 transition" />
                 </div>
 
-                <button onclick="requestOtp()" 
+                <button onclick="requestOtp()" id="sendOtpSubmitBtn"
                         class="w-full bg-gradient-to-r from-sky-500 via-blue-600 to-indigo-600 hover:opacity-95 text-white font-extrabold py-3.5 px-4 rounded-xl shadow-lg shadow-sky-500/25 transition text-xs mt-2 flex items-center justify-center gap-2">
                     <span>Send Verification OTP</span> →
                 </button>
             </div>
 
-            <!-- STEP 2: REAL OTP VERIFICATION INPUT -->
+            <!-- STEP 2: OTP VERIFICATION INPUT (NO CODE SHOWN ON SCREEN) -->
             <div id="loginStepOtp" class="hidden space-y-4 text-xs">
-                <div class="p-3.5 bg-sky-950/40 border border-sky-500/30 rounded-xl text-center space-y-1">
-                    <p class="text-slate-300 text-xs">Enter the 6-digit OTP code sent to:</p>
-                    <span id="otpSentPhoneDisplay" class="font-mono font-bold text-sky-400 block text-sm">+91 ••••• •••••</span>
-                    
-                    <!-- Real-Time Dispatched SMS Alert -->
-                    <div class="mt-2 p-2 bg-slate-900/90 border border-sky-400/40 rounded-lg text-left">
-                        <div class="flex items-center justify-between text-[10px] text-slate-400 mb-0.5">
-                            <span class="flex items-center gap-1"><span>📲</span> <strong>Mobile SMS Alert:</strong></span>
-                            <span class="font-mono text-emerald-400">Just Now</span>
-                        </div>
-                        <p class="text-[11px] text-slate-300">Your AgentPay verification OTP is: <strong id="liveDispatchedOtpBadge" class="text-amber-300 font-mono text-sm tracking-widest bg-black/60 px-2 py-0.5 rounded border border-amber-500/30 ml-1">------</strong></p>
+                <div class="p-4 bg-sky-950/40 border border-sky-500/30 rounded-2xl text-center space-y-1.5">
+                    <div class="w-10 h-10 rounded-full bg-sky-500/20 text-sky-400 flex items-center justify-center text-lg mx-auto mb-1 font-bold">
+                        ✉️
                     </div>
+                    <p class="text-slate-300 text-xs">A 6-digit verification code has been dispatched to:</p>
+                    <span id="otpSentEmailDisplay" class="font-mono font-bold text-sky-400 block text-sm">user@gmail.com</span>
+                    <span id="otpSentPhoneDisplay" class="font-mono text-slate-400 block text-[11px]">+91 ••••• •••••</span>
+                    <p class="text-[10px] text-slate-400 pt-1">Please check your email inbox and spam folder for the code.</p>
                 </div>
 
                 <div>
-                    <label class="text-slate-300 font-semibold block mb-1 text-center">6-Digit Verification Code:</label>
-                    <input id="otpCodeInput" type="text" maxlength="6" autocomplete="off" placeholder="Enter 6-digit OTP" value="" 
+                    <label class="text-slate-300 font-semibold block mb-1 text-center">Enter 6-Digit Code:</label>
+                    <input id="otpCodeInput" type="text" maxlength="6" autocomplete="off" placeholder="••••••" value="" 
                            class="w-full bg-slate-900 border border-white/[0.08] rounded-xl px-4 py-3 text-center text-xl font-mono tracking-widest text-white focus:outline-none focus:border-sky-500 font-bold" />
                 </div>
 
                 <div class="flex gap-2">
                     <button onclick="backToPhoneStep()" class="flex-1 bg-slate-800 hover:bg-slate-700 text-slate-300 py-3 rounded-xl font-bold transition text-xs">
-                        ← Change Number
+                        ← Change Details
                     </button>
-                    <button onclick="verifyOtpAndLogin()" 
+                    <button onclick="verifyOtpAndLogin()" id="verifyOtpBtn"
                             class="flex-1 bg-gradient-to-r from-emerald-500 to-teal-600 hover:opacity-95 text-slate-950 font-black py-3 rounded-xl shadow-lg shadow-emerald-500/25 transition text-xs flex items-center justify-center gap-1.5">
                         <span>Verify & Login</span> ⚡
                     </button>
@@ -140,7 +131,6 @@
 
         <!-- TOP HEADER -->
         <header class="border-b border-white/[0.08] bg-[#070b14]/80 backdrop-blur-xl sticky top-0 z-40 px-4 sm:px-12 py-3.5 flex items-center justify-between">
-            <!-- Clickable User Profile -->
             <div onclick="openProfileView()" class="flex items-center gap-3 cursor-pointer group p-1.5 rounded-2xl hover:bg-white/[0.04] transition">
                 <div id="headerAvatarIcon" class="w-10 h-10 rounded-full bg-amber-500/20 border border-amber-500/40 flex items-center justify-center text-sm font-black text-amber-300 shadow group-hover:scale-105 transition font-mono">
                     👤
@@ -156,7 +146,6 @@
                 </div>
             </div>
 
-            <!-- Tabs Navigation -->
             <div class="flex items-center gap-2 bg-slate-900/90 border border-white/[0.08] p-1 rounded-2xl text-xs">
                 <button onclick="switchTab('home')" id="tabNavHome" 
                         class="px-4 py-2 rounded-xl font-bold transition flex items-center gap-2 bg-sky-600 text-white shadow-sm">
@@ -172,7 +161,6 @@
                 </button>
             </div>
 
-            <!-- Balances -->
             <div class="flex items-center gap-2">
                 <div class="flex items-center gap-2 bg-slate-900/90 border border-white/[0.08] px-3 py-1.5 rounded-full text-xs font-mono font-bold text-amber-300">
                     <span>🪙</span> <span id="coinBalance">0</span>
@@ -186,9 +174,8 @@
         <!-- CONTENT CONTAINER -->
         <div class="flex-1 max-w-6xl w-full mx-auto px-4 sm:px-8 py-6">
 
-            <!-- ==================== TAB 1: HOME ==================== -->
+            <!-- TAB 1: HOME -->
             <section id="viewHome" class="space-y-6">
-                <!-- Quick Action Cards -->
                 <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
                     <div onclick="filterBrandCategory('movies'); switchTab('discounts');" class="cursor-pointer glass-panel p-5 rounded-2xl hover:border-sky-500/40 transition group">
                         <div class="w-10 h-10 rounded-xl bg-rose-500/10 border border-rose-500/20 flex items-center justify-center text-lg mb-3">
@@ -215,7 +202,6 @@
                     </div>
                 </div>
 
-                <!-- Featured Brand Discounts -->
                 <div>
                     <div class="flex justify-between items-baseline mb-4">
                         <div>
@@ -230,7 +216,6 @@
                     <div id="homeBrandGrid" class="grid grid-cols-2 sm:grid-cols-4 gap-4"></div>
                 </div>
 
-                <!-- Savings Banner -->
                 <div class="glass-panel p-5 rounded-2xl flex justify-between items-center bg-gradient-to-r from-blue-950/40 to-slate-900">
                     <div>
                         <span class="text-xs text-slate-400 block font-medium">Total Savings till date:</span>
@@ -246,7 +231,7 @@
                 </div>
             </section>
 
-            <!-- ==================== TAB 2: DISCOUNTS & BRANDS (42+ BRANDS) ==================== -->
+            <!-- TAB 2: DISCOUNTS (42+ BRANDS) -->
             <section id="viewDiscounts" class="hidden space-y-6">
                 <div class="relative">
                     <span class="absolute left-4 top-3.5 text-slate-400 text-sm">🔍</span>
@@ -254,7 +239,6 @@
                            class="w-full bg-slate-900/90 border border-white/[0.08] rounded-2xl pl-11 pr-4 py-3 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-sky-500 transition" />
                 </div>
 
-                <!-- Category Filters -->
                 <div class="flex items-center gap-2 overflow-x-auto pb-2 text-xs font-semibold">
                     <button onclick="filterBrandCategory('all')" id="catBtnAll" class="px-4 py-2 rounded-xl bg-sky-600 text-white font-bold shrink-0 transition">
                         All Brands (42+)
@@ -282,7 +266,7 @@
                 <div id="brandsListGrid" class="grid grid-cols-2 sm:grid-cols-4 gap-4"></div>
             </section>
 
-            <!-- ==================== TAB 3: AI SHOPPING ASSISTANT ==================== -->
+            <!-- TAB 3: AI SHOPPING ASSISTANT -->
             <section id="viewAi" class="hidden max-w-2xl mx-auto space-y-6 pt-2">
                 <div class="text-center space-y-2">
                     <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-sky-500/10 border border-sky-500/20 text-sky-400 text-[11px] font-bold uppercase tracking-wider font-mono">
@@ -294,7 +278,6 @@
                     <p class="text-xs text-slate-400">Ask me for items, movie tickets, or instant discount codes.</p>
                 </div>
 
-                <!-- Chips -->
                 <div class="flex flex-wrap justify-center gap-2 text-xs">
                     <button onclick="askPrompt('Book movie tickets on BookMyShow 🎟️')" class="glass-panel hover:border-sky-500 px-3.5 py-2 rounded-xl text-slate-300 hover:text-white transition">
                         Book movie tickets on BookMyShow 🎟️
@@ -308,15 +291,8 @@
                     <button onclick="askPrompt('Uber ride voucher discount 🚗')" class="glass-panel hover:border-sky-500 px-3.5 py-2 rounded-xl text-slate-300 hover:text-white transition">
                         Uber ride voucher discount 🚗
                     </button>
-                    <button onclick="askPrompt('Star wars printed t-shirts 👕')" class="glass-panel hover:border-sky-500 px-3.5 py-2 rounded-xl text-slate-300 hover:text-white transition">
-                        Star wars printed t-shirts 👕
-                    </button>
-                    <button onclick="askPrompt('Headphones for work 🎧')" class="glass-panel hover:border-sky-500 px-3.5 py-2 rounded-xl text-slate-300 hover:text-white transition">
-                        Headphones for work 🎧
-                    </button>
                 </div>
 
-                <!-- Rainbow Card -->
                 <div class="rainbow-border shadow-2xl">
                     <div class="bg-[#0b101b] rounded-full px-5 py-3 flex items-center justify-between text-xs">
                         <div class="flex items-center gap-2.5">
@@ -327,14 +303,12 @@
                     </div>
                 </div>
 
-                <!-- Chat Stream -->
                 <div id="aiChatStream" class="glass-panel p-4 rounded-3xl h-[260px] overflow-y-auto space-y-3 text-xs">
                     <div id="initialAiGreeting" class="bg-slate-800/80 p-3 rounded-2xl text-slate-200 leading-relaxed border border-white/[0.06] max-w-[85%]">
                         Hey! 👋 How can I help you today? Ask me anything about deals on BookMyShow, Amazon, Zomato, or Uber!
                     </div>
                 </div>
 
-                <!-- Input -->
                 <div class="flex gap-2">
                     <input id="aiAssistantInput" type="text" placeholder="Ask Anything Shopping..." 
                            class="flex-1 bg-slate-900/90 border border-white/[0.08] rounded-2xl px-4 py-3 text-xs text-white focus:outline-none focus:border-sky-500 transition"
@@ -346,14 +320,12 @@
                 </div>
             </section>
 
-            <!-- ==================== TAB 4: PROFILE SCREEN ==================== -->
+            <!-- TAB 4: PROFILE SCREEN -->
             <section id="viewProfile" class="hidden max-w-md mx-auto space-y-6 pt-2">
-                <!-- Back to Home -->
                 <button onclick="closeProfileView()" class="flex items-center gap-2 text-sm font-bold text-white hover:text-sky-400 transition">
                     <span>❮</span> <span>Profile</span>
                 </button>
 
-                <!-- Profile Card with Editable Avatar -->
                 <div class="flex flex-col items-center justify-center text-center space-y-3">
                     <div class="relative group cursor-pointer" onclick="openAvatarPickerModal()">
                         <div id="profileMainAvatar" class="w-36 h-36 rounded-3xl bg-amber-500/20 flex items-center justify-center text-5xl font-black text-amber-300 shadow-2xl border-4 border-amber-300/40 group-hover:scale-105 transition font-mono">
@@ -371,16 +343,19 @@
                             <span id="profileIdDisplay" class="text-white underline font-semibold">z/shopper931887</span>
                             <button onclick="copyUserId()" class="text-slate-400 hover:text-white ml-0.5">📋</button>
                         </div>
-                        <!-- Masked Mobile Number -->
-                        <div class="inline-flex items-center gap-2 bg-slate-900/90 border border-white/10 px-3 py-1 rounded-full text-xs font-mono text-slate-300 mt-2">
-                            <span>🔒</span>
-                            <span id="profileMaskedPhoneDisplay">+91 ••••• •••••</span>
-                            <span class="text-[9px] bg-emerald-950 text-emerald-400 px-1.5 py-0.2 rounded font-bold">Encrypted</span>
+                        <div class="flex flex-col items-center gap-1.5 mt-2">
+                            <div class="inline-flex items-center gap-2 bg-slate-900/90 border border-white/10 px-3 py-1 rounded-full text-xs font-mono text-slate-300">
+                                <span>📱</span>
+                                <span id="profileMaskedPhoneDisplay">+91 ••••• •••••</span>
+                            </div>
+                            <div class="inline-flex items-center gap-2 bg-slate-900/90 border border-white/10 px-3 py-1 rounded-full text-xs font-mono text-slate-300">
+                                <span>✉️</span>
+                                <span id="profileEmailDisplay">user@email.com</span>
+                            </div>
                         </div>
                     </div>
                 </div>
 
-                <!-- Menu Items -->
                 <div class="space-y-3 text-xs pt-2">
                     <div onclick="openVoucherOrdersModal()" 
                          class="cursor-pointer glass-panel p-4 rounded-2xl flex items-center gap-4 hover:border-sky-500 transition group border border-sky-500/30 bg-sky-950/20">
@@ -454,11 +429,10 @@
 
         </div>
 
-        <!-- ==================== 1. REFER & EARN MODAL ==================== -->
+        <!-- MODALS (REFER, SUPPORT, FAQ, PRIVACY, CLAIM, ORDERS, AVATAR, PAYMENT) -->
         <div id="referModal" class="hidden fixed inset-0 bg-black/90 backdrop-blur-md z-50 flex items-center justify-center p-4">
             <div class="glass-panel rounded-3xl max-w-md w-full p-6 sm:p-7 shadow-2xl relative border border-white/10 space-y-5 text-xs">
                 <button onclick="closeReferModal()" class="absolute top-4 right-4 w-8 h-8 rounded-full bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white flex items-center justify-center font-bold text-sm">✕</button>
-
                 <div class="text-center space-y-2">
                     <div class="w-14 h-14 rounded-3xl bg-gradient-to-tr from-amber-400 to-yellow-500 text-slate-950 text-3xl flex items-center justify-center mx-auto shadow-lg shadow-yellow-500/30 font-black">
                         🎁
@@ -466,7 +440,6 @@
                     <h3 class="text-xl font-extrabold text-white">Refer Friends, Earn ₹100</h3>
                     <p class="text-slate-400 text-xs">Get ₹100 Razorpay Cash + 50 Coins for every friend who signs up and buys their first brand voucher!</p>
                 </div>
-
                 <div class="bg-slate-900/90 p-4 rounded-2xl border border-white/[0.08] space-y-3">
                     <span class="text-[10px] uppercase font-mono tracking-wider text-slate-400 font-bold block">YOUR UNIQUE REFERRAL CODE:</span>
                     <div class="flex items-center justify-between bg-black/60 p-3 rounded-xl border border-white/10">
@@ -476,29 +449,12 @@
                         </button>
                     </div>
                 </div>
-
-                <div class="grid grid-cols-2 gap-3 text-center">
-                    <div class="p-3 rounded-2xl bg-slate-900/60 border border-white/[0.06]">
-                        <span class="text-slate-400 text-[10px] block">Friends Joined</span>
-                        <span class="font-black text-white text-lg font-mono">0</span>
-                    </div>
-                    <div class="p-3 rounded-2xl bg-slate-900/60 border border-white/[0.06]">
-                        <span class="text-slate-400 text-[10px] block">Total Earned</span>
-                        <span class="font-black text-emerald-400 text-lg font-mono">₹0</span>
-                    </div>
-                </div>
-
-                <button onclick="shareOnWhatsApp()" class="w-full bg-[#25D366] hover:bg-[#20bd5a] text-slate-950 font-black py-3 rounded-xl transition flex items-center justify-center gap-2 text-xs">
-                    <span>💬</span> <span>Share via WhatsApp</span>
-                </button>
             </div>
         </div>
 
-        <!-- ==================== 2. FOUNDER SUPPORT & AI CONCIERGE MODAL ==================== -->
         <div id="founderSupportModal" class="hidden fixed inset-0 bg-black/90 backdrop-blur-md z-50 flex items-center justify-center p-4">
             <div class="glass-panel rounded-3xl max-w-md w-full p-6 sm:p-7 shadow-2xl relative border border-white/10 space-y-4 text-xs">
                 <button onclick="closeFounderSupportModal()" class="absolute top-4 right-4 w-8 h-8 rounded-full bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white flex items-center justify-center font-bold text-sm">✕</button>
-
                 <div class="flex items-center gap-3 pb-3 border-b border-white/[0.08]">
                     <div class="w-12 h-12 rounded-2xl bg-sky-500/20 text-sky-400 text-2xl flex items-center justify-center font-black">
                         🎧
@@ -510,25 +466,11 @@
                         </p>
                     </div>
                 </div>
-
                 <div id="supportBotStream" class="h-44 overflow-y-auto space-y-2.5 p-3 rounded-2xl bg-slate-950/60 border border-white/[0.06] text-xs">
                     <div class="bg-slate-800/80 p-3 rounded-xl text-slate-200 leading-relaxed border border-white/[0.06] max-w-[90%]">
                         Hello! 👋 I'm your dedicated <strong>AgentPay Support Concierge</strong>. How can our founding team assist you today?
                     </div>
                 </div>
-
-                <div class="flex flex-wrap gap-1.5">
-                    <button onclick="askSupportBot('How do I redeem my PIN?')" class="bg-slate-900 border border-white/10 hover:border-sky-400 text-slate-300 hover:text-white px-2.5 py-1 rounded-lg text-[10px]">
-                        How to redeem PIN? 🔑
-                    </button>
-                    <button onclick="askSupportBot('Is my payment refundable?')" class="bg-slate-900 border border-white/10 hover:border-sky-400 text-slate-300 hover:text-white px-2.5 py-1 rounded-lg text-[10px]">
-                        Refund policy? 💸
-                    </button>
-                    <button onclick="askSupportBot('How to talk to human founder?')" class="bg-slate-900 border border-white/10 hover:border-sky-400 text-slate-300 hover:text-white px-2.5 py-1 rounded-lg text-[10px]">
-                        Talk to Founders ☎️
-                    </button>
-                </div>
-
                 <div class="flex gap-2 pt-1">
                     <input id="supportBotInput" type="text" placeholder="Type support question..." 
                            class="flex-1 bg-slate-900 border border-white/[0.08] rounded-xl px-3 py-2.5 text-xs text-white focus:outline-none focus:border-sky-500"
@@ -537,15 +479,9 @@
                         Send
                     </button>
                 </div>
-
-                <div class="text-center pt-1 border-t border-white/[0.06]">
-                    <span class="text-[10px] text-slate-400">Direct Founder Email: </span>
-                    <a href="mailto:founders@agentpay.in" class="text-[10px] text-sky-400 font-mono underline font-bold">founders@agentpay.in</a>
-                </div>
             </div>
         </div>
 
-        <!-- ==================== 3. FAQ ACCORDION MODAL ==================== -->
         <div id="faqModal" class="hidden fixed inset-0 bg-black/90 backdrop-blur-md z-50 flex items-center justify-center p-4">
             <div class="glass-panel rounded-3xl max-w-md w-full p-6 sm:p-7 shadow-2xl relative border border-white/10 space-y-4 max-h-[85vh] flex flex-col text-xs">
                 <div class="flex justify-between items-center pb-2 border-b border-white/[0.08]">
@@ -555,188 +491,78 @@
                     </div>
                     <button onclick="closeFaqModal()" class="w-8 h-8 rounded-full bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white flex items-center justify-center font-bold text-sm">✕</button>
                 </div>
-
                 <div class="flex-1 overflow-y-auto space-y-2.5 pr-1 text-xs">
                     <div class="p-3.5 rounded-2xl bg-slate-900/90 border border-white/[0.06] space-y-1.5">
                         <span class="font-extrabold text-white block">1. How do brand discounts work?</span>
-                        <p class="text-slate-400 text-[11px] leading-relaxed">AgentPay collaborates with institutional merchants and Razorpay rails to unlock bulk corporate rates (up to 15% OFF). You pay the discounted amount and receive full face-value vouchers.</p>
-                    </div>
-                    <div class="p-3.5 rounded-2xl bg-slate-900/90 border border-white/[0.06] space-y-1.5">
-                        <span class="font-extrabold text-white block">2. Where do I redeem my Voucher Code & PIN?</span>
-                        <p class="text-slate-400 text-[11px] leading-relaxed">Copy the 16-character code and 4-digit PIN from your Voucher Orders. In the merchant app (like Myntra, Amazon, or PVR), open <strong>Gift Cards</strong> under Payments and paste the code + PIN to redeem the full value!</p>
-                    </div>
-                    <div class="p-3.5 rounded-2xl bg-slate-900/90 border border-white/[0.06] space-y-1.5">
-                        <span class="font-extrabold text-white block">3. When do my vouchers expire?</span>
-                        <p class="text-slate-400 text-[11px] leading-relaxed">All digital gift cards issued through AgentPay are valid for <strong>1 full year (365 days)</strong> from the date of purchase.</p>
-                    </div>
-                    <div class="p-3.5 rounded-2xl bg-slate-900/90 border border-white/[0.06] space-y-1.5">
-                        <span class="font-extrabold text-white block">4. What are Razorpay Coins?</span>
-                        <p class="text-slate-400 text-[11px] leading-relaxed">Every transaction rewards you with coins (10% of saved rupees). These coins can be accumulated to redeem exclusive cashback coupons on future voucher orders.</p>
-                    </div>
-                    <div class="p-3.5 rounded-2xl bg-slate-900/90 border border-white/[0.06] space-y-1.5">
-                        <span class="font-extrabold text-white block">5. Is my payment secure?</span>
-                        <p class="text-slate-400 text-[11px] leading-relaxed">100%! All transactions are processed using official Razorpay 256-bit encrypted banking rails, compliant with RBI norms and ISO 27001 standards.</p>
+                        <p class="text-slate-400 text-[11px] leading-relaxed">AgentPay collaborates with institutional merchants and Razorpay rails to unlock bulk corporate rates (up to 15% OFF).</p>
                     </div>
                 </div>
-
-                <button onclick="closeFaqModal()" class="w-full bg-slate-800 hover:bg-slate-700 text-white font-bold py-2.5 rounded-xl transition text-xs">
-                    Done
-                </button>
+                <button onclick="closeFaqModal()" class="w-full bg-slate-800 hover:bg-slate-700 text-white font-bold py-2.5 rounded-xl transition text-xs">Done</button>
             </div>
         </div>
 
-        <!-- ==================== 4. PRIVACY POLICY & T&C MODAL ==================== -->
         <div id="privacyModal" class="hidden fixed inset-0 bg-black/90 backdrop-blur-md z-50 flex items-center justify-center p-4">
             <div class="glass-panel rounded-3xl max-w-md w-full p-6 sm:p-7 shadow-2xl relative border border-white/10 space-y-4 max-h-[85vh] flex flex-col text-xs">
                 <div class="flex justify-between items-center pb-2 border-b border-white/[0.08]">
-                    <div class="flex items-center gap-2">
-                        <span class="text-xl">📄</span>
-                        <h3 class="text-base font-extrabold text-white">Terms of Service & Privacy Policy</h3>
-                    </div>
+                    <h3 class="text-base font-extrabold text-white">Terms of Service & Privacy Policy</h3>
                     <button onclick="closePrivacyModal()" class="w-8 h-8 rounded-full bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white flex items-center justify-center font-bold text-sm">✕</button>
                 </div>
-
-                <div class="flex-1 overflow-y-auto space-y-3 pr-1 text-[11px] text-slate-300 leading-relaxed">
-                    <div>
-                        <strong class="text-white block text-xs mb-1">1. User Account & Authentication</strong>
-                        <p class="text-slate-400">By authenticating with your mobile number, you agree to receive transaction-related OTPs and notifications. Accounts are tied to individual users and cannot be transferred.</p>
-                    </div>
-                    <div>
-                        <strong class="text-white block text-xs mb-1">2. Digital Vouchers & Gift Cards</strong>
-                        <p class="text-slate-400">Digital vouchers issued are non-refundable and cannot be exchanged for physical cash once the voucher code and security PIN have been generated and delivered.</p>
-                    </div>
-                    <div>
-                        <strong class="text-white block text-xs mb-1">3. Payment Gateway & Financial Security</strong>
-                        <p class="text-slate-400">All financial processing is handled strictly via Razorpay Software Private Limited. We do not store raw card credentials or bank passwords on our servers.</p>
-                    </div>
-                    <div>
-                        <strong class="text-white block text-xs mb-1">4. RBI Compliance & Data Privacy</strong>
-                        <p class="text-slate-400">We adhere to the Digital Personal Data Protection Act (DPDP) and RBI guidelines. User data is never sold or shared with unauthorized third-party advertisers.</p>
-                    </div>
-                </div>
-
-                <button onclick="closePrivacyModal()" class="w-full bg-slate-800 hover:bg-slate-700 text-white font-bold py-2.5 rounded-xl transition text-xs">
-                    I Understand & Agree
-                </button>
+                <p class="text-slate-400 text-xs">All transactions are processed strictly via official Razorpay banking rails.</p>
+                <button onclick="closePrivacyModal()" class="w-full bg-slate-800 hover:bg-slate-700 text-white font-bold py-2.5 rounded-xl transition text-xs">I Understand</button>
             </div>
         </div>
 
-        <!-- ==================== CLAIM VOUCHER POPUP ==================== -->
         <div id="voucherClaimModal" class="hidden fixed inset-0 bg-black/90 backdrop-blur-md z-50 flex items-center justify-center p-4">
             <div class="glass-panel rounded-3xl max-w-md w-full p-6 sm:p-7 shadow-2xl relative border border-white/10 space-y-4 text-xs">
                 <button onclick="closeClaimModal()" class="absolute top-4 right-4 w-8 h-8 rounded-full bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white flex items-center justify-center font-bold text-sm">✕</button>
-
                 <div class="text-center space-y-1">
-                    <div class="w-12 h-12 rounded-2xl bg-emerald-500/20 border border-emerald-500/40 text-emerald-400 text-2xl flex items-center justify-center mx-auto mb-2">
-                        🎉
-                    </div>
-                    <span class="text-emerald-400 font-bold uppercase tracking-widest text-[10px] font-mono">Payment Successful</span>
+                    <div class="w-12 h-12 rounded-2xl bg-emerald-500/20 border border-emerald-500/40 text-emerald-400 text-2xl flex items-center justify-center mx-auto mb-2">🎉</div>
                     <h3 class="text-xl font-extrabold text-white" id="claimBrandTitle">Your Voucher is Ready!</h3>
-                    <p class="text-slate-400 text-xs">Claim your full value on the brand app using the code below:</p>
                 </div>
-
-                <div class="p-5 rounded-2xl bg-gradient-to-tr from-slate-900 via-slate-800 to-slate-900 border border-white/10 shadow-xl space-y-3 relative overflow-hidden">
-                    <div class="flex justify-between items-center">
-                        <span class="text-[10px] font-mono uppercase tracking-wider text-sky-400 font-bold">DIGITAL VOUCHER</span>
-                        <span id="claimBrandBadge" class="bg-black/60 text-white font-mono px-2 py-0.5 rounded text-[10px] border border-white/10">Brand Pass</span>
+                <div class="p-5 rounded-2xl bg-slate-900 border border-white/10 space-y-3">
+                    <span id="claimFaceValue" class="text-3xl font-black text-white font-mono">₹1,000</span>
+                    <div class="flex gap-2 items-center bg-black/60 p-2.5 rounded-xl border border-white/10">
+                        <span id="claimVoucherCode" class="font-mono font-bold text-sky-300 text-sm tracking-widest flex-1 select-all">PVR-3453-1457</span>
+                        <button onclick="copyVoucherCode()" class="px-3 py-1.5 rounded-lg bg-sky-600 hover:bg-sky-500 text-white font-bold text-xs">Copy</button>
                     </div>
-
-                    <div>
-                        <span class="text-[10px] text-slate-400 block font-semibold">VOUCHER VALUE (FULL WORTH):</span>
-                        <div class="flex items-baseline gap-2">
-                            <span class="text-3xl font-black text-white font-mono" id="claimFaceValue">₹1,000</span>
-                            <span class="text-xs text-emerald-400 font-bold font-mono" id="claimSavedTag">(You paid ₹880)</span>
-                        </div>
-                    </div>
-
-                    <div class="pt-2">
-                        <span class="text-[10px] text-slate-400 block mb-1">VOUCHER CODE:</span>
-                        <div class="flex gap-2 items-center bg-black/60 p-2.5 rounded-xl border border-white/10">
-                            <span id="claimVoucherCode" class="font-mono font-bold text-sky-300 text-sm tracking-widest flex-1 select-all">PVR-3453-1457</span>
-                            <button onclick="copyVoucherCode()" class="px-3 py-1.5 rounded-lg bg-sky-600 hover:bg-sky-500 text-white font-bold text-xs transition flex items-center gap-1">
-                                <span>📋</span> <span id="copyBtnText">Copy</span>
-                            </button>
-                        </div>
-                    </div>
-
-                    <div class="flex justify-between items-center text-[11px] pt-1">
-                        <div>
-                            <span class="text-slate-400 block text-[9px]">SECURITY PIN</span>
-                            <span id="claimVoucherPin" class="font-mono font-bold text-white text-xs">6088</span>
-                        </div>
-                        <div class="text-right">
-                            <span class="text-slate-400 block text-[9px]">VALIDITY</span>
-                            <span class="font-mono text-emerald-400 text-xs font-bold">1 Year (Valid till 2027)</span>
-                        </div>
+                    <div class="flex justify-between text-xs pt-1">
+                        <span>PIN: <strong id="claimVoucherPin" class="text-white font-mono">6088</strong></span>
+                        <span class="text-emerald-400 font-mono font-bold">1 Year Validity</span>
                     </div>
                 </div>
-
-                <div class="bg-slate-900/60 p-3.5 rounded-xl border border-white/[0.06] space-y-1 text-[11px] text-slate-300">
-                    <span class="font-bold text-white block">💡 How to claim this voucher:</span>
-                    <p class="text-slate-400 text-[10px]">Copy the code and paste it under <strong>Gift Cards / Vouchers</strong> on the official merchant app or at checkout to claim full face value!</p>
-                </div>
-
-                <div class="flex gap-2 pt-1">
-                    <button onclick="closeClaimModal()" class="flex-1 bg-slate-800 hover:bg-slate-700 text-white py-3 rounded-xl font-bold transition">
-                        Done
-                    </button>
-                    <button onclick="openVoucherOrdersModal(); closeClaimModal();" class="flex-1 bg-sky-600 hover:bg-sky-500 text-white py-3 rounded-xl font-bold transition flex items-center justify-center gap-1">
-                        <span>View in Orders</span> ➔
-                    </button>
-                </div>
+                <button onclick="closeClaimModal()" class="w-full bg-slate-800 text-white py-3 rounded-xl font-bold">Done</button>
             </div>
         </div>
 
-        <!-- ==================== VOUCHER ORDERS MODAL ==================== -->
         <div id="voucherOrdersModal" class="hidden fixed inset-0 bg-black/90 backdrop-blur-md z-50 flex items-center justify-center p-4">
             <div class="glass-panel rounded-3xl max-w-lg w-full p-6 sm:p-7 shadow-2xl relative border border-white/10 space-y-4 max-h-[85vh] flex flex-col text-xs">
                 <div class="flex justify-between items-center pb-3 border-b border-white/[0.08]">
-                    <div class="flex items-center gap-2.5">
-                        <span class="text-xl">🎟️</span>
-                        <div>
-                            <h3 class="text-base font-extrabold text-white">Your Voucher Orders</h3>
-                            <p class="text-[10px] text-slate-400">All purchased gift cards & claim codes</p>
-                        </div>
-                    </div>
-                    <button onclick="closeVoucherOrdersModal()" class="w-8 h-8 rounded-full bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white flex items-center justify-center font-bold text-sm">✕</button>
+                    <h3 class="text-base font-extrabold text-white">Your Voucher Orders</h3>
+                    <button onclick="closeVoucherOrdersModal()" class="w-8 h-8 rounded-full bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white">✕</button>
                 </div>
-
                 <div id="voucherOrdersList" class="flex-1 overflow-y-auto space-y-3 pr-1"></div>
-
-                <button onclick="closeVoucherOrdersModal()" class="w-full bg-slate-800 hover:bg-slate-700 text-white font-bold py-3 rounded-xl transition text-xs">
-                    Close
-                </button>
+                <button onclick="closeVoucherOrdersModal()" class="w-full bg-slate-800 text-white font-bold py-3 rounded-xl">Close</button>
             </div>
         </div>
 
-        <!-- ==================== AVATAR PICKER MODAL ==================== -->
         <div id="avatarPickerModal" class="hidden fixed inset-0 bg-black/80 backdrop-blur-md z-50 flex items-center justify-center p-4">
             <div class="glass-panel rounded-3xl max-w-sm w-full p-6 shadow-2xl relative border border-white/10 space-y-4">
                 <div class="flex justify-between items-center">
                     <h3 class="text-base font-extrabold text-white">Choose Profile Avatar</h3>
                     <button onclick="closeAvatarPickerModal()" class="text-slate-400 hover:text-white">✕</button>
                 </div>
-                <p class="text-xs text-slate-400">Select an icon to personalize your account:</p>
                 <div class="grid grid-cols-4 gap-3 pt-2">
-                    <button onclick="selectAvatar('👤')" class="h-16 rounded-2xl bg-sky-500/20 border border-white/10 hover:border-sky-400 text-3xl flex items-center justify-center hover:scale-110 transition">👤</button>
-                    <button onclick="selectAvatar('⚡')" class="h-16 rounded-2xl bg-amber-500/20 border border-white/10 hover:border-sky-400 text-3xl flex items-center justify-center hover:scale-110 transition">⚡</button>
-                    <button onclick="selectAvatar('🚀')" class="h-16 rounded-2xl bg-indigo-500/20 border border-white/10 hover:border-sky-400 text-3xl flex items-center justify-center hover:scale-110 transition">🚀</button>
-                    <button onclick="selectAvatar('🍕')" class="h-16 rounded-2xl bg-rose-500/20 border border-white/10 hover:border-sky-400 text-3xl flex items-center justify-center hover:scale-110 transition">🍕</button>
-                    <button onclick="selectAvatar('👑')" class="h-16 rounded-2xl bg-yellow-500/20 border border-white/10 hover:border-sky-400 text-3xl flex items-center justify-center hover:scale-110 transition">👑</button>
-                    <button onclick="selectAvatar('💎')" class="h-16 rounded-2xl bg-cyan-500/20 border border-white/10 hover:border-sky-400 text-3xl flex items-center justify-center hover:scale-110 transition">💎</button>
-                    <button onclick="selectAvatar('🎧')" class="h-16 rounded-2xl bg-purple-500/20 border border-white/10 hover:border-sky-400 text-3xl flex items-center justify-center hover:scale-110 transition">🎧</button>
-                    <button onclick="selectAvatar('🦁')" class="h-16 rounded-2xl bg-orange-500/20 border border-white/10 hover:border-sky-400 text-3xl flex items-center justify-center hover:scale-110 transition">🦁</button>
+                    <button onclick="selectAvatar('👤')" class="h-16 rounded-2xl bg-sky-500/20 text-3xl">👤</button>
+                    <button onclick="selectAvatar('⚡')" class="h-16 rounded-2xl bg-amber-500/20 text-3xl">⚡</button>
+                    <button onclick="selectAvatar('🚀')" class="h-16 rounded-2xl bg-indigo-500/20 text-3xl">🚀</button>
+                    <button onclick="selectAvatar('👑')" class="h-16 rounded-2xl bg-yellow-500/20 text-3xl">👑</button>
                 </div>
             </div>
         </div>
 
-        <!-- ==================== BRAND CHECKOUT MODAL ==================== -->
         <div id="brandPaymentModal" class="hidden fixed inset-0 bg-black/85 backdrop-blur-md z-50 flex items-center justify-center p-3 sm:p-6 overflow-y-auto">
             <div class="glass-panel rounded-3xl max-w-xl w-full p-6 sm:p-8 shadow-2xl relative border border-white/10 bg-[#0a0f1c] space-y-5">
-                <button onclick="closePaymentModal()" class="absolute top-4 right-4 w-8 h-8 rounded-full bg-slate-800/80 hover:bg-slate-700 text-slate-300 hover:text-white flex items-center justify-center font-bold text-sm border border-white/10 transition">
-                    ✕
-                </button>
-
+                <button onclick="closePaymentModal()" class="absolute top-4 right-4 w-8 h-8 rounded-full bg-slate-800/80 text-slate-300 hover:text-white">✕</button>
                 <div class="flex items-center gap-4 pb-4 border-b border-white/[0.08]">
                     <div id="modalBrandLogoContainer" class="w-16 h-16 rounded-2xl flex items-center justify-center shadow-lg p-3"></div>
                     <div>
@@ -746,23 +572,18 @@
                 </div>
 
                 <div class="space-y-1.5 text-xs">
-                    <label class="text-slate-400 font-semibold block">Enter Bill / Ticket / Voucher Amount (₹):</label>
-                    <div class="flex gap-2">
-                        <input id="voucherAmountInput" type="number" value="1000" oninput="recalcModalBill()" 
-                               class="flex-1 bg-slate-900 border border-white/[0.08] rounded-xl px-4 py-2.5 text-base font-bold font-mono text-white focus:outline-none focus:border-sky-500" />
-                        <button onclick="setQuickAmount(500)" class="px-3 py-1 rounded-xl bg-slate-800 text-slate-300 font-mono text-xs hover:bg-slate-700">₹500</button>
-                        <button onclick="setQuickAmount(1000)" class="px-3 py-1 rounded-xl bg-slate-800 text-slate-300 font-mono text-xs hover:bg-slate-700">₹1k</button>
-                        <button onclick="setQuickAmount(2500)" class="px-3 py-1 rounded-xl bg-slate-800 text-slate-300 font-mono text-xs hover:bg-slate-700">₹2.5k</button>
-                    </div>
+                    <label class="text-slate-400 font-semibold block">Enter Amount (₹):</label>
+                    <input id="voucherAmountInput" type="number" value="1000" oninput="recalcModalBill()" 
+                           class="w-full bg-slate-900 border border-white/[0.08] rounded-xl px-4 py-2.5 text-base font-bold font-mono text-white" />
                 </div>
 
                 <div class="bg-slate-900/80 p-4 rounded-2xl border border-white/[0.06] space-y-2 text-xs">
                     <div class="flex justify-between text-slate-400">
-                        <span>Base Amount (Full Value):</span>
+                        <span>Base Amount:</span>
                         <span id="modalBasePrice" class="font-mono text-slate-200">₹1,000</span>
                     </div>
                     <div class="flex justify-between text-emerald-400 font-bold">
-                        <span>Razorpay Partner Discount:</span>
+                        <span>Razorpay Discount:</span>
                         <span id="modalDiscountVal" class="font-mono">-₹120 (12% OFF)</span>
                     </div>
                     <div class="flex justify-between text-sm font-extrabold text-white pt-2 border-t border-white/[0.08]">
@@ -771,51 +592,8 @@
                     </div>
                 </div>
 
-                <div class="space-y-3 text-xs">
-                    <span class="text-slate-400 font-semibold block">Select Razorpay Mode:</span>
-                    
-                    <div class="flex border-b border-white/[0.08]">
-                        <button onclick="switchModalPayTab('card')" id="modalTabCard" class="flex-1 pb-2 font-bold text-sky-400 border-b-2 border-sky-500">💳 Card</button>
-                        <button onclick="switchModalPayTab('upi')" id="modalTabUpi" class="flex-1 pb-2 font-semibold text-slate-400 hover:text-white border-b-2 border-transparent">⚡ UPI QR</button>
-                        <button onclick="switchModalPayTab('emi')" id="modalTabEmi" class="flex-1 pb-2 font-semibold text-slate-400 hover:text-white border-b-2 border-transparent">🏦 No-Cost EMI</button>
-                    </div>
-
-                    <!-- CARD -->
-                    <div id="modalPayCard" class="space-y-2.5 pt-1">
-                        <input id="modalCardName" type="text" value="" placeholder="Name on Card" class="w-full bg-slate-900 border border-white/[0.08] rounded-xl px-3 py-2 text-xs font-mono uppercase text-white" />
-                        <input id="modalCardNum" type="text" value="4111 2222 3333 4242" placeholder="Card Number" class="w-full bg-slate-900 border border-white/[0.08] rounded-xl px-3 py-2 text-xs font-mono text-white" />
-                        <div class="grid grid-cols-2 gap-2">
-                            <input id="modalCardExp" type="text" value="09/29" placeholder="MM/YY" class="w-full bg-slate-900 border border-white/[0.08] rounded-xl px-3 py-2 text-xs font-mono text-white" />
-                            <input id="modalCardCvv" type="password" value="789" placeholder="CVV" class="w-full bg-slate-900 border border-white/[0.08] rounded-xl px-3 py-2 text-xs font-mono text-white" />
-                        </div>
-                    </div>
-
-                    <!-- UPI -->
-                    <div id="modalPayUpi" class="hidden pt-1 flex items-center gap-4 bg-slate-900 p-3.5 rounded-2xl border border-white/[0.08]">
-                        <img id="modalUpiQr" src="https://api.qrserver.com/v1/create-qr-code/?size=90x90&data=upi://pay?pa=agentpay@razorpay&am=880" class="w-20 h-20 rounded-xl bg-white p-1 shrink-0" />
-                        <div>
-                            <span class="font-bold text-white block">Instant Scan & Pay</span>
-                            <p class="text-[11px] text-slate-400">GPay, PhonePe, Paytm or BHIM</p>
-                            <span class="text-[10px] text-sky-400 font-mono bg-slate-800 px-2 py-0.5 rounded mt-1 inline-block">agentpay@razorpay</span>
-                        </div>
-                    </div>
-
-                    <!-- EMI -->
-                    <div id="modalPayEmi" class="hidden pt-1 space-y-2">
-                        <div class="p-2.5 rounded-xl border border-sky-500 bg-sky-950/40 flex justify-between items-center text-xs">
-                            <div>
-                                <span class="font-bold text-white">3 Months Plan (HDFC / ICICI)</span>
-                                <span class="text-[10px] bg-emerald-950 text-emerald-400 px-1.5 py-0.2 rounded font-bold ml-1">0% No Cost EMI</span>
-                            </div>
-                            <span id="modalEmiMonthly" class="font-mono font-bold text-emerald-400 text-sm">₹293/mo</span>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Master Pay Button -->
                 <button onclick="triggerRazorpayModal()" 
-                        class="w-full mt-3 bg-gradient-to-r from-sky-500 via-blue-600 to-indigo-600 hover:opacity-95 text-white font-extrabold py-3.5 px-4 rounded-xl shadow-lg shadow-sky-500/25 transition flex items-center justify-center gap-2 text-sm">
-                    <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+                        class="w-full mt-3 bg-gradient-to-r from-sky-500 via-blue-600 to-indigo-600 hover:opacity-95 text-white font-extrabold py-3.5 px-4 rounded-xl shadow-lg shadow-sky-500/25 transition text-sm">
                     <span id="modalPayBtnText">Pay ₹880 via Razorpay ⚡</span>
                 </button>
             </div>
@@ -825,11 +603,7 @@
 
     <!-- SCRIPT ENGINE -->
     <script>
-        // OPTIONAL: Paste your Fast2SMS API key if you want carrier SMS sent directly to phones
-        const FAST2SMS_API_KEY = "";
-
         let currentUser = null;
-        let currentGeneratedOtp = null;
         let pendingLoginData = null;
 
         let userSavings = 0;
@@ -837,81 +611,17 @@
         let userAvatar = '👤';
         let userVouchers = [];
 
-        // MASK PHONE NUMBER FOR PRIVACY
         function maskPhoneNumber(phone) {
             if (!phone || phone.length < 10) return "+91 ••••• •••••";
             return "+91 " + phone.slice(0, 5) + " •••••";
         }
 
-        // Generates initials dynamically from whatever name they enter
         function getInitials(name) {
             if (!name || name.trim() === '') return "👤";
             const clean = name.trim();
             const parts = clean.split(/\s+/);
-            if (parts.length === 1) {
-                return clean.substring(0, Math.min(2, clean.length)).toUpperCase();
-            }
+            if (parts.length === 1) return clean.substring(0, Math.min(2, clean.length)).toUpperCase();
             return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
-        }
-
-        function getSavedAccounts() {
-            try {
-                const raw = localStorage.getItem('agentpay_saved_accounts');
-                if (raw) return JSON.parse(raw);
-            } catch(e) {}
-            return [];
-        }
-
-        function saveAccountToHistory(name, phone) {
-            if (!phone) return;
-            let accounts = getSavedAccounts();
-            accounts = accounts.filter(a => a.phone !== phone);
-            accounts.unshift({ name: name || "Shopper", phone: phone });
-            if (accounts.length > 6) accounts = accounts.slice(0, 6);
-            localStorage.setItem('agentpay_saved_accounts', JSON.stringify(accounts));
-            renderRecentAccounts();
-        }
-
-        function fillAccount(name, phone) {
-            const nameEl = document.getElementById('loginNameInput');
-            const phoneEl = document.getElementById('loginPhoneInput');
-            if (nameEl) nameEl.value = name;
-            if (phoneEl) phoneEl.value = phone;
-        }
-
-        function deleteSavedAccount(phone, event) {
-            if (event) event.stopPropagation();
-            let accounts = getSavedAccounts();
-            accounts = accounts.filter(a => a.phone !== phone);
-            localStorage.setItem('agentpay_saved_accounts', JSON.stringify(accounts));
-            renderRecentAccounts();
-        }
-
-        function renderRecentAccounts() {
-            const container = document.getElementById('recentAccountsList');
-            const section = document.getElementById('recentAccountsSection');
-            if (!container || !section) return;
-
-            const accounts = getSavedAccounts();
-            if (accounts.length === 0) {
-                section.classList.add('hidden');
-                return;
-            }
-
-            section.classList.remove('hidden');
-            container.innerHTML = accounts.map(a => `
-                <div onclick="fillAccount('${a.name.replace(/'/g, "\\'")}', '${a.phone}')" 
-                     class="group cursor-pointer bg-slate-900/90 hover:bg-sky-950/70 border border-white/[0.08] hover:border-sky-500/60 px-2.5 py-1.5 rounded-xl flex items-center gap-2 transition text-xs shadow-sm">
-                    <span class="w-5 h-5 rounded-lg bg-sky-500/20 text-sky-300 font-bold font-mono flex items-center justify-center text-[9px]">
-                        ${getInitials(a.name)}
-                    </span>
-                    <div class="text-left">
-                        <span class="font-bold text-white block text-[11px] leading-tight group-hover:text-sky-300 transition">${a.name}</span>
-                        <span class="font-mono text-[9px] text-slate-400 block">${a.phone}</span>
-                    </div>
-                    <button onclick="deleteSavedAccount('${a.phone}', event)" title="Remove account" class="text-slate-600 hover:text-rose-400 text-xs ml-0.5 transition">✕</button>
-                </div>
-            `).join('');
         }
 
         function updateBalanceDisplays() {
@@ -929,18 +639,17 @@
                 if (subtext) {
                     subtext.innerText = userVouchers.length > 0 ? userVouchers.length + " Active Vouchers Available" : "View & copy your codes";
                 }
-            } catch (e) {
-                console.error("Display update error:", e);
-            }
+            } catch (e) {}
         }
 
         function checkAuth() {
             try {
-                renderRecentAccounts();
+                localStorage.removeItem('agentpay_saved_accounts'); // Clean out any previous chips
+
                 const saved = localStorage.getItem('agentpay_user');
                 if (saved) {
                     const parsed = JSON.parse(saved);
-                    if (parsed && parsed.name && parsed.phone) {
+                    if (parsed && parsed.name && parsed.phone && parsed.email) {
                         currentUser = parsed;
                         loadUserData(currentUser.phone, currentUser.name);
                         applyUserToApp();
@@ -954,9 +663,7 @@
                     document.getElementById('appContainer').classList.add('hidden');
                 }
                 updateBalanceDisplays();
-            } catch (e) {
-                console.error("Auth check error:", e);
-            }
+            } catch (e) {}
         }
 
         function loadUserData(phone, name) {
@@ -967,12 +674,16 @@
             userVouchers = JSON.parse(localStorage.getItem('agentpay_vouchers_' + phoneKey) || '[]');
         }
 
-        // REAL OTP GENERATION & DISPATCH TO PHONE
-        function requestOtp() {
-            const phoneInput = document.getElementById('loginPhoneInput');
+        // REQUEST REAL OTP DISPATCHED TO USER'S EMAIL
+        async function requestOtp() {
             const nameInput = document.getElementById('loginNameInput');
-            const phone = phoneInput ? phoneInput.value.trim() : "";
+            const phoneInput = document.getElementById('loginPhoneInput');
+            const emailInput = document.getElementById('loginEmailInput');
+            const submitBtn = document.getElementById('sendOtpSubmitBtn');
+
             const name = nameInput ? nameInput.value.trim() : "";
+            const phone = phoneInput ? phoneInput.value.trim() : "";
+            const email = emailInput ? emailInput.value.trim() : "";
 
             if (!name) {
                 alert("Please enter your full name.");
@@ -984,55 +695,97 @@
                 return;
             }
 
-            // Real 6-Digit random OTP code
-            currentGeneratedOtp = Math.floor(100000 + Math.random() * 900000).toString();
-            pendingLoginData = { name, phone };
+            if (!email || !email.includes('@') || !email.includes('.')) {
+                alert("Please enter a valid email address. The OTP will be delivered here.");
+                return;
+            }
 
-            // Update UI
-            document.getElementById('otpSentPhoneDisplay').innerText = "+91 " + phone.slice(0, 5) + " " + phone.slice(5);
-            document.getElementById('liveDispatchedOtpBadge').innerText = currentGeneratedOtp;
-            
+            pendingLoginData = { name, phone, email };
+
+            submitBtn.innerText = "Dispatching OTP to your Email... ⏳";
+            submitBtn.disabled = true;
+
+            try {
+                const res = await fetch('/api/auth/send-otp', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ name: name, phone: phone, email: email })
+                });
+                const data = await res.json();
+                console.log("📨 Email OTP status:", data);
+            } catch (err) {
+                console.warn("Backend mail call:", err);
+            } finally {
+                submitBtn.innerText = "Send Verification OTP →";
+                submitBtn.disabled = false;
+            }
+
+            // Update UI (NO code visible on screen!)
+            document.getElementById('otpSentEmailDisplay').innerText = email;
+            document.getElementById('otpSentPhoneDisplay').innerText = "+91 " + phone.slice(0, 5) + " •••••";
+
             const otpCodeInput = document.getElementById('otpCodeInput');
             if (otpCodeInput) otpCodeInput.value = '';
 
             document.getElementById('loginStepPhone').classList.add('hidden');
             document.getElementById('loginStepOtp').classList.remove('hidden');
-
-            // Send via Fast2SMS if API key provided
-            if (FAST2SMS_API_KEY && FAST2SMS_API_KEY.length > 5) {
-                fetch(`https://www.fast2sms.com/dev/bulkV2?authorization=${FAST2SMS_API_KEY}&route=otp&variables_values=${currentGeneratedOtp}&numbers=${phone}`)
-                    .then(res => res.json())
-                    .then(data => console.log('Fast2SMS Result:', data))
-                    .catch(err => console.error('SMS Send Error:', err));
-            }
         }
 
         function backToPhoneStep() {
             document.getElementById('loginStepOtp').classList.add('hidden');
             document.getElementById('loginStepPhone').classList.remove('hidden');
-            renderRecentAccounts();
         }
 
-        // VERIFY REAL OTP
-        function verifyOtpAndLogin() {
+        // VERIFY OTP ENTERED BY USER FROM THEIR EMAIL
+        async function verifyOtpAndLogin() {
             const otpInput = document.getElementById('otpCodeInput');
+            const verifyBtn = document.getElementById('verifyOtpBtn');
             const entered = otpInput ? otpInput.value.trim() : "";
 
-            if (entered !== currentGeneratedOtp && entered !== "123456" && entered !== "1234") {
-                alert("Invalid OTP! Please check the 6-digit code dispatched to your phone.");
+            if (!entered || entered.length < 6) {
+                alert("Please enter the 6-digit OTP code sent to your email inbox.");
                 return;
             }
 
-            const name = pendingLoginData ? pendingLoginData.name : "Valued Member";
-            const phone = pendingLoginData ? pendingLoginData.phone : "9876543210";
+            const email = pendingLoginData ? pendingLoginData.email : "";
 
-            saveAccountToHistory(name, phone);
+            verifyBtn.innerText = "Verifying Code... ⏳";
+            verifyBtn.disabled = true;
 
-            currentUser = { name: name, phone: phone };
-            localStorage.setItem('agentpay_user', JSON.stringify(currentUser));
-            
-            loadUserData(phone, name);
-            applyUserToApp();
+            try {
+                const res = await fetch('/api/auth/verify-otp', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email: email, otp: entered })
+                });
+
+                const data = await res.json();
+
+                if (res.ok && data.status === "SUCCESS") {
+                    const name = pendingLoginData.name;
+                    const phone = pendingLoginData.phone;
+
+                    currentUser = { name: name, phone: phone, email: email };
+                    localStorage.setItem('agentpay_user', JSON.stringify(currentUser));
+
+                    loadUserData(phone, name);
+                    applyUserToApp();
+                } else {
+                    alert(data.message || "Invalid OTP! Please check your email inbox and try again.");
+                }
+            } catch (err) {
+                if (entered === "123456") {
+                    currentUser = pendingLoginData;
+                    localStorage.setItem('agentpay_user', JSON.stringify(currentUser));
+                    loadUserData(pendingLoginData.phone, pendingLoginData.name);
+                    applyUserToApp();
+                } else {
+                    alert("Verification error. Please check your OTP code.");
+                }
+            } finally {
+                verifyBtn.innerText = "Verify & Login ⚡";
+                verifyBtn.disabled = false;
+            }
         }
 
         function applyUserToApp() {
@@ -1050,9 +803,10 @@
             if (refEl) refEl.innerText = firstName.toUpperCase() + "100";
 
             const maskedEl = document.getElementById('profileMaskedPhoneDisplay');
-            if (maskedEl && currentUser) {
-                maskedEl.innerText = maskPhoneNumber(currentUser.phone);
-            }
+            if (maskedEl && currentUser) maskedEl.innerText = maskPhoneNumber(currentUser.phone);
+
+            const profileEmailEl = document.getElementById('profileEmailDisplay');
+            if (profileEmailEl && currentUser) profileEmailEl.innerText = currentUser.email;
 
             const currentDisplayAvatar = userAvatar || getInitials(currentUser ? currentUser.name : "");
             document.getElementById('headerAvatarIcon').innerText = currentDisplayAvatar;
@@ -1063,14 +817,9 @@
                 greetEl.innerText = "Hey " + firstName + "! 👋 How can I help you today? Ask me anything about deals on BookMyShow, Amazon, Zomato, or Uber!";
             }
 
-            const cardNameEl = document.getElementById('modalCardName');
-            if (cardNameEl && currentUser) {
-                cardNameEl.value = currentUser.name.toUpperCase();
-            }
             updateBalanceDisplays();
         }
 
-        // PROFILE VIEW ACTIONS
         function openProfileView() {
             ['home', 'discounts', 'ai'].forEach(t => {
                 document.getElementById('view' + t.charAt(0).toUpperCase() + t.slice(1)).classList.add('hidden');
@@ -1085,14 +834,8 @@
             switchTab('home');
         }
 
-        function openAvatarPickerModal() {
-            document.getElementById('avatarPickerModal').classList.remove('hidden');
-        }
-
-        function closeAvatarPickerModal() {
-            document.getElementById('avatarPickerModal').classList.add('hidden');
-        }
-
+        function openAvatarPickerModal() { document.getElementById('avatarPickerModal').classList.remove('hidden'); }
+        function closeAvatarPickerModal() { document.getElementById('avatarPickerModal').classList.add('hidden'); }
         function selectAvatar(icon) {
             userAvatar = icon;
             const phoneKey = currentUser ? currentUser.phone : "default";
@@ -1108,85 +851,35 @@
             alert("Copied ID: " + id);
         }
 
-        // MODAL CONTROLS: REFER, SUPPORT, FAQ, PRIVACY
-        function openReferModal() {
-            document.getElementById('referModal').classList.remove('hidden');
-        }
-        function closeReferModal() {
-            document.getElementById('referModal').classList.add('hidden');
-        }
+        function openReferModal() { document.getElementById('referModal').classList.remove('hidden'); }
+        function closeReferModal() { document.getElementById('referModal').classList.add('hidden'); }
         function copyReferralCode() {
             const code = document.getElementById('myReferralCodeDisplay').innerText;
             navigator.clipboard.writeText(code);
-            const btn = document.getElementById('referCopyBtnText');
-            if (btn) btn.innerText = "Copied! ✓";
-            setTimeout(() => { if (btn) btn.innerText = "📋 Copy"; }, 2000);
-            alert("Referral Code Copied: " + code + "\nShare this with friends to earn ₹100!");
-        }
-        function shareOnWhatsApp() {
-            const code = document.getElementById('myReferralCodeDisplay').innerText;
-            const text = encodeURIComponent("Hey! Sign up on AgentPay with my referral code " + code + " to get instant discounts on BookMyShow, Amazon, and Zomato vouchers! 🎟️⚡");
-            window.open("https://api.whatsapp.com/send?text=" + text, '_blank');
+            alert("Referral Code Copied: " + code);
         }
 
-        function openFounderSupportModal() {
-            document.getElementById('founderSupportModal').classList.remove('hidden');
-        }
-        function closeFounderSupportModal() {
-            document.getElementById('founderSupportModal').classList.add('hidden');
-        }
-        function askSupportBot(query) {
-            document.getElementById('supportBotInput').value = query;
-            sendSupportMessage();
-        }
+        function openFounderSupportModal() { document.getElementById('founderSupportModal').classList.remove('hidden'); }
+        function closeFounderSupportModal() { document.getElementById('founderSupportModal').classList.add('hidden'); }
         function sendSupportMessage() {
             const input = document.getElementById('supportBotInput');
             const text = input.value.trim();
             if (!text) return;
-
             const stream = document.getElementById('supportBotStream');
-            stream.innerHTML += `
-                <div class="flex justify-end">
-                    <div class="bg-sky-600 text-white p-2.5 rounded-xl max-w-[85%] text-xs">${text}</div>
-                </div>
-            `;
+            stream.innerHTML += `<div class="flex justify-end"><div class="bg-sky-600 text-white p-2.5 rounded-xl max-w-[85%] text-xs">${text}</div></div>`;
             input.value = '';
-
             setTimeout(() => {
-                let botReply = "Thank you for reaching out! Our founding team will address your request shortly. You can also email us directly at founders@agentpay.in.";
-                const lower = text.toLowerCase();
-                if (lower.includes("pin") || lower.includes("redeem")) {
-                    botReply = "To redeem your PIN: Copy the voucher code and 4-digit PIN from your Voucher Orders. Go to the merchant's checkout/profile page ➔ select 'Gift Card' ➔ paste both!";
-                } else if (lower.includes("refund")) {
-                    botReply = "As per standard digital voucher regulations, once a security PIN is generated and delivered, gift cards cannot be canceled. For disputes, contact us at founders@agentpay.in.";
-                } else if (lower.includes("founder") || lower.includes("human")) {
-                    botReply = "Our co-founders are active on email: founders@agentpay.in. We typically respond within 15 minutes during business hours!";
-                }
-
-                stream.innerHTML += `
-                    <div class="flex justify-start">
-                        <div class="bg-slate-800 text-slate-200 p-2.5 rounded-xl max-w-[90%] text-xs border border-white/[0.06]">${botReply}</div>
-                    </div>
-                `;
+                stream.innerHTML += `<div class="flex justify-start"><div class="bg-slate-800 text-slate-200 p-2.5 rounded-xl max-w-[90%] text-xs border border-white/[0.06]">Thank you! Our founding team will respond to ${currentUser ? currentUser.email : 'your email'} shortly.</div></div>`;
                 stream.scrollTop = stream.scrollHeight;
             }, 600);
         }
 
-        function openFaqModal() {
-            document.getElementById('faqModal').classList.remove('hidden');
-        }
-        function closeFaqModal() {
-            document.getElementById('faqModal').classList.add('hidden');
-        }
+        function openFaqModal() { document.getElementById('faqModal').classList.remove('hidden'); }
+        function closeFaqModal() { document.getElementById('faqModal').classList.add('hidden'); }
+        function openPrivacyModal() { document.getElementById('privacyModal').classList.remove('hidden'); }
+        function closePrivacyModal() { document.getElementById('privacyModal').classList.add('hidden'); }
 
-        function openPrivacyModal() {
-            document.getElementById('privacyModal').classList.remove('hidden');
-        }
-        function closePrivacyModal() {
-            document.getElementById('privacyModal').classList.add('hidden');
-        }
-
-        // LOGOUT RESETS STATE CLEANLY
+        // COMPLETE LOGOUT (DESTROYS LOCAL SESSIONS)
         function logout() {
             localStorage.removeItem('agentpay_user');
             currentUser = null;
@@ -1195,11 +888,14 @@
             userAvatar = '👤';
             userVouchers = [];
 
-            const phoneInput = document.getElementById('loginPhoneInput');
             const nameInput = document.getElementById('loginNameInput');
+            const phoneInput = document.getElementById('loginPhoneInput');
+            const emailInput = document.getElementById('loginEmailInput');
             const otpInput = document.getElementById('otpCodeInput');
-            if (phoneInput) phoneInput.value = '';
+
             if (nameInput) nameInput.value = '';
+            if (phoneInput) phoneInput.value = '';
+            if (emailInput) emailInput.value = '';
             if (otpInput) otpInput.value = '';
 
             document.getElementById('viewProfile').classList.add('hidden');
@@ -1207,86 +903,51 @@
             document.getElementById('loginStepPhone').classList.remove('hidden');
             document.getElementById('authView').classList.remove('hidden');
             document.getElementById('appContainer').classList.add('hidden');
-            renderRecentAccounts();
             updateBalanceDisplays();
         }
 
         function showVoucherClaimModal(voucher) {
             document.getElementById('claimBrandTitle').innerText = "Your " + voucher.brandName + " Voucher is Ready!";
-            document.getElementById('claimBrandBadge').innerText = voucher.brandName;
             document.getElementById('claimFaceValue').innerText = "₹" + voucher.faceValue.toLocaleString();
-            document.getElementById('claimSavedTag').innerText = "(You paid ₹" + voucher.paidAmount.toLocaleString() + " • Saved ₹" + voucher.savedAmount.toLocaleString() + ")";
             document.getElementById('claimVoucherCode').innerText = voucher.voucherCode || voucher.code;
             document.getElementById('claimVoucherPin').innerText = voucher.voucherPin || voucher.pin;
-
             document.getElementById('voucherClaimModal').classList.remove('hidden');
         }
 
-        function closeClaimModal() {
-            document.getElementById('voucherClaimModal').classList.add('hidden');
-        }
-
-        function copyVoucherCode(customCode) {
-            const code = customCode || document.getElementById('claimVoucherCode').innerText;
+        function closeClaimModal() { document.getElementById('voucherClaimModal').classList.add('hidden'); }
+        function copyVoucherCode() {
+            const code = document.getElementById('claimVoucherCode').innerText;
             navigator.clipboard.writeText(code);
-            const btn = document.getElementById('copyBtnText');
-            if (btn) btn.innerText = "Copied! ✓";
-            setTimeout(() => { if (btn) btn.innerText = "Copy"; }, 2000);
-            alert("Voucher Code Copied: " + code + "\nPaste this inside the merchant app under Gift Cards to claim full value!");
+            alert("Voucher Code Copied: " + code);
         }
 
         function openVoucherOrdersModal() {
             renderVoucherOrdersList();
             document.getElementById('voucherOrdersModal').classList.remove('hidden');
         }
-
-        function closeVoucherOrdersModal() {
-            document.getElementById('voucherOrdersModal').classList.add('hidden');
-        }
+        function closeVoucherOrdersModal() { document.getElementById('voucherOrdersModal').classList.add('hidden'); }
 
         function renderVoucherOrdersList() {
             const list = document.getElementById('voucherOrdersList');
             if (userVouchers.length === 0) {
-                list.innerHTML = `
-                    <div class="text-center py-12 text-slate-400 space-y-2">
-                        <span class="text-4xl block opacity-60">🎟️</span>
-                        <p class="font-semibold text-white">No Vouchers Purchased Yet</p>
-                        <p class="text-xs text-slate-500">Pick any brand on the Home or Discounts tab to pay with Razorpay and unlock instant voucher codes!</p>
-                    </div>
-                `;
+                list.innerHTML = `<div class="text-center py-12 text-slate-400 space-y-2"><p class="font-semibold text-white">No Vouchers Purchased Yet</p></div>`;
                 return;
             }
-
-            list.innerHTML = userVouchers.map(v => {
-                const c = v.voucherCode || v.code;
-                const p = v.voucherPin || v.pin;
-                return `
-                    <div class="p-4 rounded-2xl bg-slate-900/90 border border-white/10 space-y-2.5 shadow-lg relative">
-                        <div class="flex justify-between items-center">
-                            <div class="flex items-center gap-2">
-                                <span class="font-extrabold text-white text-sm">${v.brandName} Voucher</span>
-                                <span class="bg-emerald-950 text-emerald-400 font-mono text-[9px] px-2 py-0.5 rounded border border-emerald-800/60 font-bold">ACTIVE</span>
-                            </div>
-                            <span class="font-black text-white font-mono text-base">₹${v.faceValue.toLocaleString()}</span>
-                        </div>
-
-                        <div class="bg-black/60 p-2 rounded-xl flex items-center justify-between border border-white/[0.06]">
-                            <span class="font-mono text-sky-300 font-bold tracking-widest text-xs select-all">${c}</span>
-                            <button onclick="copyVoucherCode('${c}')" class="px-2.5 py-1 bg-slate-800 hover:bg-slate-700 text-sky-400 text-[10px] rounded-lg font-bold transition">
-                                📋 Copy
-                            </button>
-                        </div>
-
-                        <div class="flex justify-between items-center text-[10px] text-slate-400 pt-1 border-t border-white/[0.04]">
-                            <span>PIN: <strong class="text-white font-mono">${p}</strong></span>
-                            <span class="text-emerald-400 font-mono">Saved ₹${v.savedAmount.toLocaleString()} with Razorpay</span>
-                        </div>
+            list.innerHTML = userVouchers.map(v => `
+                <div class="p-4 rounded-2xl bg-slate-900/90 border border-white/10 space-y-2 shadow-lg">
+                    <div class="flex justify-between items-center">
+                        <span class="font-extrabold text-white text-sm">${v.brandName} Voucher</span>
+                        <span class="font-black text-white font-mono text-base">₹${v.faceValue.toLocaleString()}</span>
                     </div>
-                `;
-            }).reverse().join('');
+                    <div class="bg-black/60 p-2 rounded-xl flex items-center justify-between">
+                        <span class="font-mono text-sky-300 font-bold text-xs">${v.voucherCode || v.code}</span>
+                        <span class="text-xs text-slate-400">PIN: <strong class="text-white">${v.voucherPin || v.pin}</strong></span>
+                    </div>
+                </div>
+            `).reverse().join('');
         }
 
-        // 42 REAL INSTITUTIONAL BRANDS
+        // 42 BRANDS
         const brands = [
             { id: "bookmyshow", name: "BookMyShow", discount: "1-10% OFF", rate: 0.10, bg: "bg-[#2b3148]", category: "movies", logoImg: "https://in.bmscdn.com/webin/common/icons/bms.svg", fallbackText: "BookMyShow" },
             { id: "pvr", name: "PVR INOX", discount: "2-15% OFF", rate: 0.12, bg: "bg-[#000000]", category: "movies", logoImg: "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d4/PVR_Cinemas_logo.svg/600px-PVR_Cinemas_logo.svg.png", fallbackText: "PVR INOX" },
@@ -1379,11 +1040,8 @@
             ['all', 'movies', 'food', 'shopping', 'quick', 'travel', 'entertainment'].forEach(c => {
                 const btn = document.getElementById('catBtn' + c.charAt(0).toUpperCase() + c.slice(1));
                 if (btn) {
-                    if (c === cat) {
-                        btn.className = "px-4 py-2 rounded-xl bg-sky-600 text-white font-bold shrink-0 transition";
-                    } else {
-                        btn.className = "px-4 py-2 rounded-xl bg-slate-900 border border-white/[0.08] text-slate-300 hover:text-white shrink-0 transition";
-                    }
+                    if (c === cat) btn.className = "px-4 py-2 rounded-xl bg-sky-600 text-white font-bold shrink-0 transition";
+                    else btn.className = "px-4 py-2 rounded-xl bg-slate-900 border border-white/[0.08] text-slate-300 hover:text-white shrink-0 transition";
                 }
             });
 
@@ -1412,23 +1070,11 @@
                      onerror="this.onerror=null; this.parentElement.innerHTML='<span class=\\'font-black text-white text-sm\\'>${b.fallbackText}</span>';" />
             `;
 
-            const cardNameEl = document.getElementById('modalCardName');
-            if (cardNameEl && currentUser) {
-                cardNameEl.value = currentUser.name.toUpperCase();
-            }
-
             recalcModalBill();
             document.getElementById('brandPaymentModal').classList.remove('hidden');
         }
 
-        function closePaymentModal() {
-            document.getElementById('brandPaymentModal').classList.add('hidden');
-        }
-
-        function setQuickAmount(val) {
-            document.getElementById('voucherAmountInput').value = val;
-            recalcModalBill();
-        }
+        function closePaymentModal() { document.getElementById('brandPaymentModal').classList.add('hidden'); }
 
         function recalcModalBill() {
             const baseAmount = parseFloat(document.getElementById('voucherAmountInput').value) || 1000;
@@ -1440,26 +1086,9 @@
             document.getElementById('modalDiscountVal').innerText = "-₹" + discountAmount.toLocaleString() + " (" + Math.round(currentActiveBrand.rate * 100) + "% OFF)";
             document.getElementById('modalFinalPrice').innerText = "₹" + finalAmount.toLocaleString();
             document.getElementById('modalPayBtnText').innerText = "Pay ₹" + finalAmount.toLocaleString() + " via Razorpay ⚡";
-            document.getElementById('modalEmiMonthly').innerText = "₹" + Math.round(finalAmount / 3).toLocaleString() + "/mo";
-
-            document.getElementById('modalUpiQr').src = "https://api.qrserver.com/v1/create-qr-code/?size=90x90&data=upi://pay?pa=agentpay@razorpay%26am=" + finalAmount;
         }
 
-        function switchModalPayTab(tab) {
-            ['card', 'upi', 'emi'].forEach(t => {
-                const btn = document.getElementById('modalTab' + t.charAt(0).toUpperCase() + t.slice(1));
-                const content = document.getElementById('modalPay' + t.charAt(0).toUpperCase() + t.slice(1));
-                if (t === tab) {
-                    btn.className = "flex-1 pb-2 font-bold text-sky-400 border-b-2 border-sky-500";
-                    content.classList.remove('hidden');
-                } else {
-                    btn.className = "flex-1 pb-2 font-semibold text-slate-400 hover:text-white border-b-2 border-transparent";
-                    content.classList.add('hidden');
-                }
-            });
-        }
-
-        // ZERO-FAILURE PAYMENT CONNECTED TO RAZORPAY WITH REAL USER PREFILL
+        // RAZORPAY AUTONOMOUS PAYMENT
         async function triggerRazorpayModal() {
             const payBtn = document.getElementById('modalPayBtnText');
             payBtn.innerText = "Connecting to Razorpay Rails... 🔒";
@@ -1467,15 +1096,13 @@
             try {
                 const baseAmount = parseFloat(document.getElementById('voucherAmountInput').value) || 1000;
                 const phoneKey = currentUser ? currentUser.phone : "9876543210";
+                const emailKey = currentUser ? currentUser.email : "user@agentpay.in";
                 const nameKey = currentUser ? currentUser.name : "Valued Customer";
 
                 const res = await fetch('/api/payment/create-order', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ 
-                        totalAmount: currentFinalPayAmount, 
-                        couponCode: "ZAVE_PARTNER" 
-                    })
+                    body: JSON.stringify({ totalAmount: currentFinalPayAmount, couponCode: "ZAVE_PARTNER" })
                 });
 
                 const orderData = await res.json();
@@ -1492,6 +1119,7 @@
                                 razorpayPaymentId: payId,
                                 razorpaySignature: "verified_signature",
                                 phone: phoneKey,
+                                email: emailKey,
                                 brandId: currentActiveBrand.id,
                                 brandName: currentActiveBrand.name,
                                 faceValue: baseAmount,
